@@ -20,7 +20,7 @@ public class SwaggerConfig {
     public Docket apiDocket(){
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.progressivecoder.ordermanagement"))
+                .apis(RequestHandlerSelectors.basePackage("com.example"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(getApiInfo());
@@ -32,7 +32,7 @@ public class SwaggerConfig {
                 "App to demonstrate Saga Pattern using Axon and Spring Boot",
                 "1.0.0",
                 "Terms of Service",
-                new Contact("Saurabh Dashora", "progressivecoder.com", "coder.progressive@gmail.com"),
+                new Contact("Anand", "anand.com", "coder.anand@gmail.com"),
                 "",
                 "",
                 Collections.emptyList());

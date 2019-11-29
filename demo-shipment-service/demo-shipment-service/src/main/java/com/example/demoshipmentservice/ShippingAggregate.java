@@ -7,8 +7,9 @@ import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import com.example.democore.CreateShippingCommand;
-import com.example.democore.InitiateOrderShippedEvent;
+import com.example.democore.CreateShippingFailedCommand;
 import com.example.democore.OrderShippedEvent;
+import com.example.democore.OrderShippedFailedEvent;
 
 @Aggregate
 public class ShippingAggregate {
@@ -24,29 +25,46 @@ public class ShippingAggregate {
 
 	private boolean isOrderShipped;
 
-	
+	private static int dailyShippments;
 
 	public ShippingAggregate() {
 	}
 
 	@CommandHandler
 	public ShippingAggregate(CreateShippingCommand createShippingCommand) {
-		System.out.println("CreateShippingCommand :: "+createShippingCommand.shippingId);
-			AggregateLifecycle.apply(new InitiateOrderShippedEvent(createShippingCommand.shippingId,
+		System.out.println("CreateShippingCommand :: " + createShippingCommand.shippingId);
+
+		if (dailyShippments < 3) {
+			AggregateLifecycle.apply(new OrderShippedEvent(createShippingCommand.shippingId,
 					createShippingCommand.orderId, createShippingCommand.paymentId, createShippingCommand.userToken));
+		} else {
+
+			AggregateLifecycle.apply(new OrderShippedFailedEvent(createShippingCommand.shippingId,
+					createShippingCommand.orderId, createShippingCommand.paymentId, createShippingCommand.userToken));
+		}
 	}
 
 	@EventSourcingHandler
-	protected void on(InitiateOrderShippedEvent orderShippedEvent) {
-		System.out.println("OrderShippedEvent :: "+orderShippedEvent.shippingId);
-//		String res = shippingServiceImpl.performShippingBussLogic();
-//		if (res.equals("done")) {
-//			isOrderShipped=true;
-//		}
+	protected void on(OrderShippedEvent orderShippedEvent) {
+		System.out.println("OrderShippedEvent :: " + orderShippedEvent.shippingId);
 
 		this.shippingId = orderShippedEvent.shippingId;
 		this.orderId = orderShippedEvent.orderId;
 		this.userToken = orderShippedEvent.userToken;
+		++dailyShippments;
+		System.out.println("Daily shippments count " + dailyShippments);
 	}
 
+	@EventSourcingHandler
+	protected void on(OrderShippedFailedEvent orderShippedFailedEvent) {
+		System.out.println("OrderShippedFailedEvent :: " + orderShippedFailedEvent.shippingId);
+		// String res = shippingServiceImpl.performShippingBussLogic();
+		// if (res.equals("done")) {
+		// isOrderShipped=true;
+		// }
+
+		this.shippingId = orderShippedFailedEvent.shippingId;
+		this.orderId = orderShippedFailedEvent.orderId;
+		this.userToken = orderShippedFailedEvent.userToken;
+	}
 }

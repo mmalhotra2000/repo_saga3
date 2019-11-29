@@ -1,28 +1,28 @@
 package com.example.demoshipmentservice;
 
-import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.eventhandling.EventHandler;
 import org.springframework.stereotype.Service;
 
-import com.example.democore.CreateShippingFailedCommand;
-import com.example.democore.InitiateOrderShippedEvent;
 import com.example.democore.OrderShippedEvent;
+import com.example.democore.OrderShippedFailedEvent;
 
 @Service
 public class ShippingEventHandler {
 
-	private final CommandGateway commandGateway;
+	@EventHandler
+	public void on(OrderShippedEvent orderShippedEvent) {
 
-	public ShippingEventHandler(CommandGateway commandGateway) {
-		this.commandGateway = commandGateway;
+		System.out.println("ShippingEventHandler :: orderShippedEvent " + orderShippedEvent.shippingId);
+		System.out.println("ShippingEventHandler :: orderShippedEvent user token" + orderShippedEvent.userToken);
+
 	}
 
 	@EventHandler
-	public void on(InitiateOrderShippedEvent initiateOrderShippedEvent) {
+	public void on(OrderShippedFailedEvent orderShippedFailedEvent) {
 
-		System.out.println("ShippingEventHandler ,OrderShippedEvent :: " + initiateOrderShippedEvent.shippingId);
-		commandGateway.send(new CreateShippingFailedCommand(initiateOrderShippedEvent.shippingId, initiateOrderShippedEvent.orderId,
-				initiateOrderShippedEvent.paymentId, initiateOrderShippedEvent.userToken));
+		System.out.println("ShippingEventHandler :: orderShippedFailedEvent " + orderShippedFailedEvent.shippingId);
+
+		System.out.println("ShippingEventHandler :: orderShippedFailedEvent user token" + orderShippedFailedEvent.userToken);
 
 	}
 

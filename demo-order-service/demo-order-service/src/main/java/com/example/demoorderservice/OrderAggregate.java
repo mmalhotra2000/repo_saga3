@@ -38,7 +38,7 @@ public class OrderAggregate {
 	public OrderAggregate(CreateOrderCommand createOrderCommand) {
 
 		AggregateLifecycle.apply(new OrderCreatedEvent(createOrderCommand.orderId, createOrderCommand.itemType,
-				createOrderCommand.price, createOrderCommand.currency, createOrderCommand.orderStatus, "token"));
+				createOrderCommand.price, createOrderCommand.currency, createOrderCommand.orderStatus, createOrderCommand.userToken));
 
 	}
 
