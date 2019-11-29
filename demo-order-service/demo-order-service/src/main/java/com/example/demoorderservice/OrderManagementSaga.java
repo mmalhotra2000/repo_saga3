@@ -10,10 +10,8 @@ import org.axonframework.modelling.saga.SagaLifecycle;
 import org.axonframework.modelling.saga.StartSaga;
 import org.axonframework.spring.stereotype.Saga;
 
-import com.example.democore.CreateInitiateShippingCommand;
 import com.example.democore.CreateInvoiceCommand;
 import com.example.democore.CreateShippingCommand;
-import com.example.democore.InitiateOrderShippedEvent;
 import com.example.democore.InvoiceCreatedEvent;
 import com.example.democore.OrderCreatedEvent;
 import com.example.democore.OrderShippedEvent;
@@ -53,22 +51,8 @@ public class OrderManagementSaga {
 		SagaLifecycle.associateWith("shipping", shippingId);
 
 		// send the create shipping command
-		commandGateway.send(new CreateInitiateShippingCommand(shippingId, invoiceCreatedEvent.orderId,
+		commandGateway.send(new CreateShippingCommand(shippingId, invoiceCreatedEvent.orderId,
 				invoiceCreatedEvent.paymentId, invoiceCreatedEvent.userToken));
-	}
-
-	@SagaEventHandler(associationProperty = "orderId")
-	public void handle(InitiateOrderShippedEvent initiateOrderShippedEvent) {
-		String shippingId = UUID.randomUUID().toString();
-
-		System.out.println("Saga continued initiateOrderShippedEvent");
-
-		// associate Saga with shipping
-		SagaLifecycle.associateWith("shipping", shippingId);
-
-		// send the create shipping command
-		commandGateway.send(new CreateShippingCommand(shippingId, initiateOrderShippedEvent.orderId,
-				initiateOrderShippedEvent.paymentId, initiateOrderShippedEvent.userToken));
 	}
 
 	@SagaEventHandler(associationProperty = "orderId")
