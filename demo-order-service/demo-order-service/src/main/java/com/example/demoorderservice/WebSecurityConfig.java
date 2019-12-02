@@ -64,5 +64,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// Add a filter to validate the tokens with every request
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+		
+		//https://stackoverflow.com/questions/53395200/h2-console-is-not-showing-in-browser
+		httpSecurity.headers().frameOptions().disable();
 	}
 }
